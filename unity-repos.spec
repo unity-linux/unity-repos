@@ -21,7 +21,7 @@ License:  MIT
 Source0:  RPM-GPG-KEY-Unity
 
 # Unity release repo config templates
-Source1:  Unity-Linux-unity.repo
+Source1:  Unity-Linux-mageia.repo
 
 Provides: unity-repos(%{version})
 Provides: unity-repos(releasever) = %{version}
