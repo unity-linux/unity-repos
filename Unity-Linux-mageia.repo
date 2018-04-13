@@ -1,0 +1,10 @@
+[Unity-Linux-Current]
+name=Current Repo for Unity-Linux
+baseurl=http://unitylinux.com/pub/repo/current/$basearch/
+type=rpm-md
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=http://unitylinux.com/pub/repo/RPM-GPG-KEY-Unity
+repo_gpgcheck=0
+enabled=1
+enabled_metadata=1
