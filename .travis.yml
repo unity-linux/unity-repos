@@ -4,7 +4,7 @@ services:
 - docker
 install: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_c556ecd7dbcb_key -iv $encrypted_c556ecd7dbcb_iv -in .stuff.tar.gz.enc -out stuff.tar.gz -d
+- openssl aes-256-cbc -K $encrypted_76ef2fe558b5_key -iv $encrypted_76ef2fe558b5_iv -in .stuff.tar.gz.enc -out stuff.tar.gz -d
 - file stuff.tar.gz
 - tar xzvf stuff.tar.gz -C /tmp/
 - eval "$(ssh-agent -s)"
@@ -18,9 +18,11 @@ script:
 - docker run --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" $DID tail -f /dev/null
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -bs *.spec' --privileged=true
+- docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && dnf builddep *.spec -y && rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -ba *.spec' --privileged=true
 - find ~/ -name *.src.rpm
 after_success:
 - sudo -H pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1 requests[security] jinja2 marshmallow copr-cli simplejson
-- if [ -f $(find ~/ -name *.src.rpm) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm); fi
-- if [ -f $(find ~/ -name *.src.rpm -print -quit) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm -print -quit); fi
+- scp "ssh -o StrictHostKeyChecking=no" $(find ~/ -name *.x86_64.rpm -print -quit) foobar2:rpm_staging/Unity-Linux/x86_64/
+
+  #- if [ -f $(find ~/ -name *.src.rpm) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm); fi
+  #- if [ -f $(find ~/ -name *.src.rpm -print -quit) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm -print -quit); fi

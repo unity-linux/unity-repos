@@ -8,7 +8,7 @@
 
 Name:     unity-repos
 # When Cauldron becomes new release, Version must match new release
-Version:  7
+Version:  1
 # During Cauldron devel, it should be 0.0.X
 # During release candidate, it should be 0.1.X
 # Before final release, bump to 1
