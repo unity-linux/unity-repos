@@ -23,10 +23,12 @@ script:
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
 - docker exec $CID /bin/sh -c 'cd /rpmbuild && rpmbuilder'
-- find ~/rpmbuild -name *.src.rpm
-- find ~/rpmbuild -name *.x86_64.rpm
-- find ~/rpmbuild -name *.noarch.rpm
+- pwd
+- ls
+  #- find ~/rpmbuild -name *.src.rpm
+  #- find ~/rpmbuild -name *.{RPM_ARCH}.rpm
+  #- find ~/rpmbuild -name *.noarch.rpm
 after_success:
 - sudo -H pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1 requests[security] jinja2 marshmallow copr-cli simplejson
-- scp -o StrictHostKeyChecking=no $(find ~/rpmbuild -name "*.rpm" -print|grep -v "src.rpm") foobar2:rpm_staging/Unity-Linux/${RPM_ARCH}/
-- ssh -o StrictHostKeyChecking=no foobar2 'sh ~/bin/down_copr'
+  #- scp -o StrictHostKeyChecking=no $(find /rpmbuild -name "*.rpm" -print|grep -v "src.rpm") foobar2:rpm_staging/Unity-Linux/${RPM_ARCH}/
+  #- ssh -o StrictHostKeyChecking=no foobar2 'sh ~/bin/down_copr'
