@@ -20,9 +20,11 @@ script:
 - echo $CID
 - docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && dnf builddep *.spec -y && rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -ba *.spec' --privileged=true
 - find ~/ -name *.src.rpm
+- find ~/ -name *.x86_64.rpm
+- find ~/ -name *.noarch.rpm
 after_success:
 - sudo -H pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1 requests[security] jinja2 marshmallow copr-cli simplejson
-- scp "ssh -o StrictHostKeyChecking=no" $(find ~/ -name *.x86_64.rpm -print -quit) foobar2:rpm_staging/Unity-Linux/x86_64/
+- scp -o StrictHostKeyChecking=no $(find ./ -name "*.rpm" -print|grep -v "src.rpm") foobar2:rpm_staging/Unity-Linux/x86_64/
 
   #- if [ -f $(find ~/ -name *.src.rpm) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm); fi
   #- if [ -f $(find ~/ -name *.src.rpm -print -quit) ]; then copr-cli --config /tmp/stuff/.copr build jmiahman/Unity-Linux $(find ~/ -name *.src.rpm -print -quit); fi
