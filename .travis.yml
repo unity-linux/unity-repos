@@ -16,16 +16,16 @@ env:
 - MOCK_CONFIG="mageia-cauldron-i586"
 - MOCK_CONFIG="mageia-cauldron-x86_64"
 script:
+- RPM_ARCH=$(echo $MOCK_CONFIG|cut -d '-' -f3)
 - export DID=$(docker image ls | grep -m1 mageia-rpmbuilder | awk '{print $3}')
 - echo $DID
 - docker run --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" $DID tail -f /dev/null
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && dnf builddep *.spec -y && rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -ba *.spec' --privileged=true
+- docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && setarch ${RPM_ARCH} dnf builddep *.spec -y && setarch ${RPM_ARCH} rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -ba *.spec' --privileged=true
 - find ~/ -name *.src.rpm
 - find ~/ -name *.x86_64.rpm
 - find ~/ -name *.noarch.rpm
-- RPM_ARCH=$(echo $MOCK_CONFIG|cut -d '-' -f3)
 after_success:
 - sudo -H pip install --upgrade pyOpenSSL ndg-httpsclient pyasn1 requests[security] jinja2 marshmallow copr-cli simplejson
 - scp -o StrictHostKeyChecking=no $(find ./ -name "*.rpm" -print|grep -v "src.rpm") foobar2:rpm_staging/Unity-Linux/${RPM_ARCH}/
