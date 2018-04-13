@@ -22,7 +22,7 @@ script:
 - docker run --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" $DID tail -f /dev/null
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- docker exec $CID /bin/sh -c 'cd /rpmbuild && mkdir ./{SRPMS,RPMS} && setarch ${RPM_ARCH} dnf builddep *.spec -y && setarch ${RPM_ARCH} rpmbuild "--undefine=_disable_source_fetch" --define "_topdir $(pwd)" --define "_sourcedir $(pwd)" -ba *.spec' --privileged=true
+- docker exec $CID /bin/sh -c 'cd /rpmbuild && rpmbuilder'
 - find ~/ -name *.src.rpm
 - find ~/ -name *.x86_64.rpm
 - find ~/ -name *.noarch.rpm
