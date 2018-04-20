@@ -1,9 +1,9 @@
 [Unity-Linux-Current]
-name=Current Repo for Unity-Linux
+name=Unity-Linux - $releasever - $basearch
 baseurl=http://unitylinux.com/pub/repo/current/$basearch/
 type=rpm-md
 skip_if_unavailable=True
-gpgcheck=1
+gpgcheck=0
 gpgkey=http://unitylinux.com/pub/repo/RPM-GPG-KEY-Unity
 repo_gpgcheck=0
 enabled=1
